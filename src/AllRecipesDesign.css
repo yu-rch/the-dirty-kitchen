@@ -1,0 +1,242 @@
+@font-face {
+    font-family: 'curetro';
+    src: url(Curetro.otf);
+}
+  
+@font-face {
+    font-family: 'ls';
+    src: url(LeagueSpartan-Bold.ttf);
+}
+
+@font-face {
+    font-family: 'biliner';
+    src: url(Biliner Meclan Demo.ttf);
+}
+
+@font-face {
+    font-family: 'retro';
+    src: url(RetroVintage-Regular.otf);
+}
+
+
+.dropdown {
+  position: absolute; /* Position it below the search input */
+  top: 45px; /* Place it directly below the input */
+  left: 60px; /* Align to the left of the input */
+  background: white; /* Background color */
+  border: 1px solid #ccc; /* Border for dropdown */
+  max-height: 200px; /* Set a max height */
+  overflow-y: auto; /* Allow scrolling */
+  z-index: 1000; /* Ensure it appears above other elements */
+  width: calc(62% - 5px); /* Match width of the search input, adjust for padding if necessary */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
+
+  display: block;
+}
+
+.dropdown ol {
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+  list-style-type: none; /* Remove bullet points */
+}
+
+.search-items {
+  padding: 10px; /* Add padding for items */
+  cursor: pointer; /* Show pointer on hover */
+  align-items: left;
+  text-decoration: none;
+  font-family: 'ls';
+  color: black;
+  display: flex;
+  height: 10px;
+}
+
+.dropdown li:hover {
+  background: #f0f0f0; /* Highlight on hover */
+}
+
+  .headers3 {
+    position: relative;
+    margin-top: -670px;
+    margin-left: 300px;
+    z-index: 0;
+}
+
+.hbg5 {
+    position: absolute;
+    width: 920px;
+    height: 110px;
+    background-color: #813a45;
+    border: 2px solid white;
+    border-radius: 0px 0px 50px 50px;
+    margin-top: -40px;
+    margin-left: -20px;
+    z-index: 1;
+}
+
+.hbg6 {
+  position: absolute;
+    width: 280px;
+    height: 110px;
+    background-color: #813a45;
+    border: 2px solid white;
+    border-radius: 0px 0px 30px 30px;
+    margin-top: -40px;
+    margin-left: 920px;
+    z-index: 1;
+}
+
+.searchbar3 {
+  position: absolute;
+    width: 850px;
+    height: 40px;
+    border: 2px solid #813a45;
+    border-radius: 50px;
+    font-family: 'ls';
+    font-size: 16px;
+    padding-left: 20px;
+    z-index: 2;
+}
+
+.searchbarbutton3 {
+  position: absolute;
+    width: 100px;
+    height: 40px;
+    background-color: #813a45;
+    border-radius: 50px;
+    color: white;
+    font-family: 'ls';
+    margin-top: 3px;
+    margin-left: 773px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.header11 {
+  position: absolute;
+    margin-top: -670px;
+    margin-left: 1240px;
+    font-family: 'ls';
+    font-size: 40px;
+    color: #813a45;
+    -webkit-text-stroke: .5px white;
+    z-index: 3;
+}
+
+.header12 {
+  position: absolute;
+    margin-top: -675px;
+    margin-left: 1415px;
+    font-family: 'ls';
+    font-size: 60px;
+    color: white;
+    z-index: 3;
+}
+
+.tab1{
+  position: absolute;
+  width: 1200px;
+  height: 250px;
+  margin-top: -550px;
+  margin-left: 300px;
+  /* border: 2px solid #813a45; */
+
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  /* padding-top: 20px; */
+}
+
+.img1 {
+  position: absolute;
+  background: url(new.jpg) no-repeat;
+  background-size: cover;
+  object-fit: cover;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.title1{
+  position: absolute;
+  font-family: 'ls';
+  font-size: 20px;
+  color: black;
+  text-decoration: none;
+  margin-top: 110px;
+}
+
+.title1:hover{
+  text-decoration: underline;
+}
+
+.timelength1{
+  position: absolute;
+  font-family: 'Arial';
+  font-size: 12px;
+  color: black;
+  text-decoration: none;
+  margin-top: 135px;
+}
+
+.des1{
+  position: absolute;
+  font-family: 'Arial';
+  font-size: 14px;
+  color: black;
+  text-decoration: none;
+  padding-top: 145px;
+  margin-left: 15px;
+  margin-right: 15px;
+  text-align: center;
+}
+
+  .footer3{
+    position: relative;
+    margin-top: 1000px;
+    margin-left: 725px;
+  }
+
+  .fbg3{
+    position: absolute;
+    width: 340px;
+    height: 33px;
+    border-radius: 20px;
+    background-color: #813a45;
+    margin-top: 5px;
+    margin-left: -20px;
+  }
+
+  .circle3{
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border: 1px solid white;
+    border-radius: 50%;
+    color: transparent;
+    margin-top: 13px;
+    margin-left: -5px;
+  }
+
+  .fff1{
+    position: absolute;
+    font-family: Arial;
+    font-size: 14px;
+    margin-top: 13px;
+    margin-left: -1px;
+    color: white;
+    text-align: center;
+  }
+
+  .fff2{
+    position: absolute;
+    font-family: Arial;
+    font-size: 14px;
+    margin-left: 20px;
+    color: white;
+    text-align: center;
+  }
+
+  .filler3 {
+    height: 75px; 
+  }
