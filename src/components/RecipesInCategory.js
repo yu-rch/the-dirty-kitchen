@@ -28,9 +28,12 @@ const RecipesInCategories = () => {
       }, []);
 
     useEffect(() => {
+        if (!categories.length) return;
+        const resolved = categories.find(c => c.strCategory.toLowerCase() === categoryName);
+        const query = resolved ? resolved.strCategory : categoryName;
         const fetchRecipes = async () => {
             try {
-                const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${categoryName}`);
+                const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${query}`);
                 const data = await response.json();
                 setRecipes(data.meals || []);
             } catch (error) {
@@ -39,7 +42,7 @@ const RecipesInCategories = () => {
         };
 
         fetchRecipes();
-    }, [categoryName]);
+    }, [categories, categoryName]);
 
     return (
         <div>
@@ -53,7 +56,7 @@ const RecipesInCategories = () => {
 
                     <a href='/contact'><button className='contact'>Contact</button></a>
                     
-                    <div class="dropdown4">
+                    <div className="dropdown4">
                         <button className="dropbtn4" onClick={() => window.location.href = '/recipes/all'}>
                         Categories
                         </button>
@@ -81,7 +84,7 @@ const RecipesInCategories = () => {
             </div>
 
             <p className='header13'>Recipes |</p>
-            <p className='header14'>{categoryName}</p>
+            <p className='header14'>{categories.find(c => c.strCategory.toLowerCase() === categoryName)?.strCategory || categoryName}</p>
              
             <div className='cnf'>
             <div className='tab2'>
@@ -134,7 +137,7 @@ const RecipesInCategories = () => {
                 </div>
             </div>
 
-                <div class="filler4"></div>
+                <div className="filler4"></div>
             </body>
         </div>
     );

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import '../RecipePageDesign.css';
+import '../CommentSection.css';
 import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 const RecipePage = () => {
 
     const [categories, setCategories] = useState([]);
-    const { idMeal } = useParams(); // Get the recipe ID from the URL
+    const { idMeal } = useParams();
     const [recipe, setRecipe] = useState(null);
 
     useEffect(() => {
@@ -18,18 +22,20 @@ const RecipePage = () => {
                 console.error('Error fetching categories:', error);
             }
         };
-    
+
         fetchCategories();
-      }, []);
+    }, []);
 
     useEffect(() => {
+        setRecipe(null);
         const fetchRecipe = async () => {
             try {
                 const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`);
                 const data = await response.json();
-                setRecipe(data.meals[0]); // Set the fetched recipe
+                setRecipe(data.meals ? data.meals[0] : null);
             } catch (error) {
                 console.error('Error fetching recipe:', error);
+                setRecipe(null);
             }
         };
 
@@ -38,58 +44,42 @@ const RecipePage = () => {
 
     const [posts, setPosts] = useState([]);
     const [newPost, setNewPost] = useState({ username: '', comment: '' });
-    const [editPost, setEditPost] = useState(null);
+    const [loadError, setLoadError] = useState('');
 
     useEffect(() => {
+        setPosts([]);
+        setLoadError('');
         fetchPosts();
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [idMeal]);
 
     const fetchPosts = () => {
-        axios.get("http://localhost:8000/api/getComments")
+        axios.get(`${API_URL}/api/getComments`, { params: { idMeal } })
             .then((response) => {
                 setPosts(response.data);
+                setLoadError('');
             })
             .catch((error) => {
                 console.log(error);
+                setLoadError('Could not load comments. Make sure the backend server is running.');
             });
     };
 
-    const handleCreatePost = (id) => {
-        axios.post(`http://localhost:8000/api/createComments`, newPost)
-        .then(() => {
-            fetchPosts();
-            setNewPost({ username: '', comment: '' })
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+    const handleCreatePost = () => {
+        if (!newPost.comment.trim()) {
+            alert('Please write a comment.');
+            return;
+        }
+        axios.post(`${API_URL}/api/createComments`, { ...newPost, idMeal })
+            .then(() => {
+                fetchPosts();
+                setNewPost({ username: '', comment: '' });
+            })
+            .catch((error) => {
+                console.log(error);
+                alert('Failed to post comment. Make sure the backend server is running.');
+            });
     };
-
-    const handleDeletePost = (id) => {
-        axios.delete(`http://localhost:8000/api/deleteComments/${id}`)
-        .then(() => {
-            setPosts(posts.filter(post => post._id !== id));
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    };
-    
-    const handleUpdatePost = (id) => {
-        axios.put(`http://localhost:8000/api/updateComments/${id}`)
-        .then(() => {
-            fetchPosts();
-            setEditPost(null);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    };
-
-    const handleEditChange = (e, id) => { 
-        const { name, value } = e.target;
-        setPosts(posts.map(post => post._id === id ? { ...post, [name]: value } : post));
-    }
 
     if (!recipe) {
         return <div>Loading...</div>;
@@ -99,23 +89,21 @@ const RecipePage = () => {
         .filter(key => key.startsWith('strIngredient') && recipe[key])
         .map(key => recipe[key]);
 
-        const instructions = recipe.strInstructions.split('\r\n');
+    const instructions = (recipe.strInstructions || '').split(/\r?\n/).filter(line => line.trim() !== '');
 
     return (
         <div>
-            <link rel="stylesheet" href="../RecipePageDesign.css"/>
             <body className='body8'>
                 <div className='navigation'>
-                <div className='navigation'>
                     <div className='logo8'></div>
-                    
+
                     <a href='/home'><button className='home'>Home</button></a>
                     <a href='/about'><button className='about'>About</button></a>
                     <a href='/contact'><button className='contact'>Contact</button></a>
-                        
-                    <div class="dropdown8">
+
+                    <div className="dropdown8">
                         <button className="dropbtn8" onClick={() => window.location.href = '/recipes/all'}>
-                        Categories
+                            Categories
                         </button>
                         <div className="dropdown-content8">
                             {categories.length > 0 ? (
@@ -130,7 +118,6 @@ const RecipePage = () => {
                         </div>
                     </div>
                     <div className='divider8'></div>
-                    </div>
                 </div>
 
                 <div
@@ -144,7 +131,6 @@ const RecipePage = () => {
                         marginLeft: '247px',
                     }}
                 ></div>
-
 
                 <div className='foodname-cont'>
                     <div className='header21'>{recipe.strMeal}</div>
@@ -160,118 +146,54 @@ const RecipePage = () => {
                             {ingredients.map((ingredient, index) => (
                                 <label key={index}>
                                     <span>{ingredient}</span>
-                                    <input type='checkbox' /><br/>
+                                    <input type='checkbox' /><br />
                                 </label>
                             ))}
                         </p>
                     </div>
                     <p className='e3'>Instructions:</p>
-                    <ol className='instructions' >
+                    <ol className='instructions'>
                         {instructions.map((instruction, index) => (
                             <li key={index}>{instruction}</li>
                         ))}
                     </ol>
 
                     <div className='comments-cont'>
-
                         <p className='comments'>Join the conversation!</p>
-
                         <div className='divi'></div>
 
-                        <div className='unposted-box'>
-                            <p>By</p>
-                            <input type='text' className='username1' placeholder='ex. preciousIvy@01' 
+                        <div className='comment-form'>
+                            <input
+                                type='text'
+                                className='comment-name-input'
+                                placeholder='Your name (optional)'
                                 value={newPost.username}
-                                onChange={(e) => setNewPost({ ...newPost, username: e.target.value })} />
-                            <textarea className='comment-box1' placeholder='Enter your comment here...' 
+                                onChange={(e) => setNewPost({ ...newPost, username: e.target.value })}
+                            />
+                            <textarea
+                                className='comment-body-input'
+                                placeholder='Write a comment...'
                                 value={newPost.comment}
-                                onChange={(e) => setNewPost({ ...newPost, comment: e.target.value })} />
-                            <button className='post' onClick={handleCreatePost}>Post</button>
+                                onChange={(e) => setNewPost({ ...newPost, comment: e.target.value })}
+                            />
+                            <button className='comment-post-btn' onClick={handleCreatePost}>Post Comment</button>
                         </div>
 
-                        {posts.map((post) => (
-                            <div key={post._id} className='posted-box1'>
-                                <p>By: <span className='username2'>{post.username}</span> </p>                                        
-                                <textarea className='comment-box2'
-                                    onChange={(e) => handleEditChange(e, post._id)}>{post.comment}</textarea> 
-                                <button className='clear'>Clear</button>
-                                <button className='edit' onClick={() => setEditPost(post)}>Edit Post</button>
-                                                                
-                                <button className='delete' onClick={() => handleDeletePost(post._id)}>Delete Post</button>
-                                <p className='replies1'><i>Replies:</i></p>
+                        {loadError && <p className='comment-error'>{loadError}</p>}
 
-                                {editPost && (
-                                    <div>
-                                        <input type='text'  value={editPost.comment}
-                                        onChange={(e) => setEditPost({ ...editPost, comment: e.target.value})}/>
-                                        <button className='update' onClick={() => handleUpdatePost(post._id)}>Update Post</button>
+                        {posts.length > 0 ? (
+                            posts.map((post) => (
+                                <div key={post._id} className='comment-item'>
+                                    <div className='comment-item-top'>
+                                        <span className='comment-username'>{post.username || 'Anonymous'}</span>
+                                        <span className='comment-date'>{post.createdAt ? String(post.createdAt).slice(0, 16) : ''}</span>
                                     </div>
-                                )}
-                            </div>
-                        ))}
-
-                        <div className='posted-box2'>
-                            <p>By</p>
-                            <p className='username4'>username01</p>
-                            <div className='comment-box3'><i>"Lorem Ipsum is simply dummy text of the printing and 
-                                typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever 
-                                since the 1500s, when an unknown printer took a galley of type and scrambled it to 
-                                make a type specimen book. It has survived not only five centuries, but also the 
-                                leap into electronic typesetting, remaining essentially unchanged. It was popularised 
-                                in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
-                                and more recently with desktop publishing software like Aldus PageMaker including 
-                                versions of Lorem Ipsum."</i></div>
-
-                            <button className='reply2'>Reply</button>
-                            
-                            <p className='replies2'><i>Replies:</i></p>
-
-                            <div className='reply-cont2'>
-                                <p>By</p>
-                                <input type='text' className='username4' placeholder='ex. preciousIvy@01'></input>
-                                <textarea className='reply-box2' placeholder='Reply here...'>Lorem Ipsum is simply dummy text of the printing and 
-                                    typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever 
-                                    since the 1500s, when an unknown printer took a galley of type and scrambled it to 
-                                    make a type specimen book. It has survived not only five centuries, but also the 
-                                    leap into electronic typesetting, remaining essentially unchanged. It was popularised 
-                                    in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
-                                    and more recently with desktop publishing software like Aldus PageMaker including 
-                                    versions of Lorem Ipsum.</textarea>
-                                <button className='post2'>Post</button>
-                            </div>
-
-                            <div className='reply-cont3'>
-                                <p>By</p>
-                                <p className='username5'>username01</p>
-                                <div className='reply-box3'><i>"Lorem Ipsum is simply dummy text of the printing and 
-                                    typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever 
-                                    since the 1500s, when an unknown printer took a galley of type and scrambled it to 
-                                    make a type specimen book. It has survived not only five centuries, but also the 
-                                    leap into electronic typesetting, remaining essentially unchanged. It was popularised 
-                                    in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
-                                    and more recently with desktop publishing software like Aldus PageMaker including 
-                                    versions of Lorem Ipsum."</i></div>
-                                <button className='clear2'>Clear</button>
-                                <button className='edit2'>Edit Post</button>
-                                <button className='update2'>Update Post</button>
-                                <button className='delete2'>Delete Post</button>
-                            </div>
-
-                            <div className='reply-cont4'>
-                                <p>By</p>
-                                <p className='username6'>username01</p>
-                                <div className='reply-box4'><i>"Lorem Ipsum is simply dummy text of the printing and 
-                                    typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever 
-                                    since the 1500s, when an unknown printer took a galley of type and scrambled it to 
-                                    make a type specimen book. It has survived not only five centuries, but also the 
-                                    leap into electronic typesetting, remaining essentially unchanged. It was popularised 
-                                    in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
-                                    and more recently with desktop publishing software like Aldus PageMaker including 
-                                    versions of Lorem Ipsum."</i></div>
-                                <button className='reply5'>Reply</button>
-                            </div>
-                        </div>                        
-
+                                    <p className='comment-text'>{post.comment}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p className='comment-empty'>No comments yet. Be the first to comment!</p>
+                        )}
                     </div>
 
                     <div className='footer8'>
@@ -290,9 +212,3 @@ const RecipePage = () => {
 
 export default RecipePage;
 
-
-
-
-            
-
-            

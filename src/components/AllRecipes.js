@@ -1,5 +1,5 @@
 import '../AllRecipesDesign.css';
-import { Card, Col, Row  } from 'antd';
+import { Card } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -25,9 +25,8 @@ const AllRecipes = () => {
     }, []);
 
 
-    const [allMeals, setAllMeals] = useState([]); 
-    const [mealName, setMealName] = useState(''); 
-    const [num, setNum] = useState(); 
+    const [allMeals, setAllMeals] = useState([]);
+    const [mealName, setMealName] = useState('');
     useEffect(() => {
         const fetchMeals = async () => {
             if (!mealName) {
@@ -38,7 +37,7 @@ const AllRecipes = () => {
             try {
                 const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${mealName}`);
                 if (response.data.meals) {
-                    setAllMeals(response.data.meals.slice(0, num));
+                    setAllMeals(response.data.meals.slice(0, 8));
                 } else {
                     setAllMeals([]);
                 }
@@ -48,7 +47,7 @@ const AllRecipes = () => {
         };
 
         fetchMeals();
-    }, [mealName, num]);
+    }, [mealName]);
 
   
 
@@ -155,7 +154,7 @@ const AllRecipes = () => {
                         <ol>
                             {allMeals.map((meal) => (
                                 <li key={meal.idMeal}>
-                                    <Link to={`/meal/${meal.idMeal}`} className='search-items'>{meal.strMeal}</Link>
+                                    <Link to={`/recipe/${meal.idMeal}`} className='search-items'>{meal.strMeal}</Link>
                                 </li>
                             ))}
                         </ol>

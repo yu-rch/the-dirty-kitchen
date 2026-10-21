@@ -3,7 +3,6 @@ import '../ContactDesign.css';
 
 const Contact = () => {
 
-  const [text, setText] = useState('');
   const [categories, setCategories] = useState([]);
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
@@ -11,7 +10,6 @@ const Contact = () => {
 
 
   const handleChange = (event) => {
-      setText(event.target.value);
       const { name, value } = event.target;
       if (name === 'name') setName(value);
       if (name === 'email') setEmail(value);
@@ -23,6 +21,15 @@ const Contact = () => {
     setEmail('');
     setName('');
   }    
+
+  const handleSubmit = () => {
+      if (!name.trim() || !email.trim() || !message.trim()) {
+          alert('Please fill in your name, email, and message.');
+          return;
+      }
+      alert('Thank you! Your message has been sent.');
+      clearForm();
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -120,17 +127,17 @@ const Contact = () => {
 
 
         <div className='email-wrapper'>
-          <label className='name'>Name: <input value={name} className='tf1'></input></label>
-          <label className='email'>Email: <input value={email} className='tf2'></input></label>
+          <label className='name'>Name: <input name="name" value={name} onChange={handleChange} className='tf1'></input></label>
+          <label className='email'>Email: <input name="email" value={email} onChange={handleChange} className='tf2'></input></label>
           <label className='message'>Message: </label>
-          <textarea value={message} className='tf3' 
+          <textarea name="message" value={message} className='tf3' 
             placeholder='Enter your message here'
             rows={10}
             cols={70}
             onChange={handleChange}/>
           <div className='btn-cont'>
             <button className='clearbtn' onClick={clearForm}>Clear</button>
-            <button className='submitbtn'>Submit</button>
+            <button className='submitbtn' onClick={handleSubmit}>Submit</button>
           </div>
         </div>
 

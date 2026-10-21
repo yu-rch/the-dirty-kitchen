@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import LogIn from './components/LogIn'
 import Home from './components/Home'
 import About from './components/About'
@@ -19,6 +19,8 @@ const AppController = () => {
         <Route path="/recipes/:categoryName" element={<RecipesInCategories/>} />
         <Route path='/contact' element={<Contact/>}></Route>
         <Route path="/recipe/:idMeal" element={<RecipePage />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
     </Router>
   )

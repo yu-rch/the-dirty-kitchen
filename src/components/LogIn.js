@@ -1,40 +1,45 @@
 import React from 'react'
 
 const LogIn = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
+    window.location.href = '/home';
+  };
+
   return (
     <div>
 
       <div className="wrapper">
         <div className="login-wrapper">
             <div className="login-header">Login</div>
-            <div className="login-form">
+            <form className="login-form" onSubmit={handleLogin}>
                 <div className="input-wrapper">
-                <input type="text" id="user" class="input-field" required/>
-                <label for="user" class="label">Username</label>
-                <i class="bx bx-user icon"></i>
+                <input type="text" id="user" className="input-field" required/>
+                <label htmlFor="user" className="label">Username</label>
+                <i className="bx bx-user icon"></i>
                 </div>
-                <div class="input-wrapper">
-                <input type="password" id="pw" class="input-field" required/>
-                <label for="pw" class="label">Password</label>
-                <i class="bx bx-lock-alt icon"></i>
+                <div className="input-wrapper">
+                <input type="password" id="pw" className="input-field" required/>
+                <label htmlFor="pw" className="label">Password</label>
+                <i className="bx bx-lock-alt icon"></i>
                 </div>
-                <div class="login-check">
-                <div class="remember">
+                <div className="login-check">
+                <div className="remember">
                     <input type="checkbox" id="remember-me"/>
-                    <label for="remember-me">Remember me</label>
+                    <label htmlFor="remember-me">Remember me</label>
                 </div>
-                <div class="forgot">
+                <div className="forgot">
                     <a href="#">Forgot password?</a>
                 </div>
                 </div>
-                <div class="input-wrapper">
-                <input type="submit" class="input-login" value="Login"/>
+                <div className="input-wrapper">
+                <button type="submit" className="input-login">Login</button>
                 </div>
-                <div class="register">
+                <div className="register">
                 <span>Don't have an account? <a href="#">Register</a>
                 </span>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
     </div>
